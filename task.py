@@ -71,4 +71,34 @@ elif command == "delete":
     else:
         print("Task not found.")
 
+elif command == "update":
+    try:
+        task_id = int(sys.argv[2])
+        new_description = sys.argv[3] 
+    except (ValueError, IndexError):
+        print("Please provide a valid task ID and description.")
+        sys.exit()
+
+    try:
+        with open("task.json", "r") as file:
+            tasks = json.load(file)
+
+    except FileNotFoundError:
+        print("You don't have any tasks yet.")
+        sys.exit()
+
+    updated = False
+    for task in tasks:
+        if task["id"] == task_id:
+            task["description"] = new_description
+            task["updatedAt"] = datetime.now().isoformat()
+            updated = True
+            break
+
+    if updated:
+        with open("task.json", "w") as file:
+            json.dump(tasks, file, indent=4)
+        print("Task updated.")
+    else:
+        print("Task not found.")
 
